@@ -1,0 +1,53 @@
+<style>
+    tr th{
+        padding: 4px;
+    }
+    .form-popup {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  right: 15px;
+  border: 3px solid #f1f1f1;
+  z-index: 9;
+}
+</style>
+
+<% if(count!=null) {%>
+    <h1>Count = <%=count%></h1>    
+<% } %>
+
+<% if(student!=null) { %>
+    <table border="1px">
+        <tr>
+            <th>Name</th>
+            <th>Roll No</th>
+            <th>WAD Marks</th>
+            <th>CC Marks</th>
+            <th>DSBDA Marks</th>
+            <th>CNS Marks</th>
+            <th>AI Marks</th>
+        </tr>
+        <% student.forEach(function(item){ %>
+            <tr>
+                <td><%= item.Name%></td>
+                <td><%= item.Roll_No%></td>
+                <td><%= item.WAD_Marks%></td>
+                <td><%= item.CC_Marks%></td>
+                <td><%= item.DSBDA_Marks%></td>
+                <td><%= item.CNS_Marks%></td>
+                <td><%= item.AI_Marks%></td>
+                <td>
+                    <form action="/deleteStudent/<%=item._id %>" method="post">
+                        <button type="submit">Delete</button>                      
+                    </form>                 
+                </td>
+            </tr>
+
+        <% }) %>
+    </table>
+    <button>
+        <a href="/">
+        Insert Student Details
+    </a>
+    </button>    
+<%} %>
