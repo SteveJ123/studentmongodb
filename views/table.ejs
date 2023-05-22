@@ -1,53 +1,227 @@
 <style>
-    tr th{
+    tr th {
         padding: 4px;
     }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    /* Button used to open the contact form - fixed at the bottom of the page */
+    .open-button {
+        background-color: #555;
+        color: white;
+        padding: 16px 20px;
+        border: none;
+        cursor: pointer;
+        opacity: 0.8;
+        position: fixed;
+        bottom: 23px;
+        right: 28px;
+        width: 280px;
+    }
+
+    /* The popup form - hidden by default */
     .form-popup {
-  display: none;
-  position: fixed;
-  bottom: 0;
-  right: 15px;
-  border: 3px solid #f1f1f1;
-  z-index: 9;
-}
+        display: none;
+        position: fixed;
+        bottom: 0;
+        right: 15px;
+        border: 3px solid #f1f1f1;
+        z-index: 9;
+    }
+
+    /* Add styles to the form container */
+    .form-container {
+        max-width: 300px;
+        padding: 10px;
+        background-color: white;
+        height: 500px;
+    }
+
+    /* Full-width input fields */
+    .form-container input[type=text],
+    .form-container input[type=number] {
+        width: 70%;
+        padding: 15px;
+        margin: 5px 0 4px 0;
+        border: none;
+        background: #f1f1f1;
+    }
+
+    /* When the inputs get focus, do something */
+    .form-container input[type=text]:focus,
+    .form-container input[type=number]:focus {
+        background-color: #ddd;
+        outline: none;
+    }
+
+    /* Set a style for the submit/login button */
+    .form-container .btn {
+        background-color: #04AA6D;
+        color: white;
+        padding: 16px 20px;
+        border: none;
+        cursor: pointer;
+        width: 100%;
+        margin-bottom: 10px;
+        opacity: 0.8;
+    }
+
+    /* Add a red background color to the cancel button */
+    .form-container .cancel {
+        background-color: red;
+    }
+
+    /* Add some hover effects to buttons */
+    .form-container .btn:hover,
+    .open-button:hover {
+        opacity: 1;
+    }
 </style>
 
 <% if(count!=null) {%>
-    <h1>Count = <%=count%></h1>    
-<% } %>
+    <h1>Count = <%=count%>
+    </h1>
+    <% } %>
 
-<% if(student!=null) { %>
-    <table border="1px">
-        <tr>
-            <th>Name</th>
-            <th>Roll No</th>
-            <th>WAD Marks</th>
-            <th>CC Marks</th>
-            <th>DSBDA Marks</th>
-            <th>CNS Marks</th>
-            <th>AI Marks</th>
-        </tr>
-        <% student.forEach(function(item){ %>
-            <tr>
-                <td><%= item.Name%></td>
-                <td><%= item.Roll_No%></td>
-                <td><%= item.WAD_Marks%></td>
-                <td><%= item.CC_Marks%></td>
-                <td><%= item.DSBDA_Marks%></td>
-                <td><%= item.CNS_Marks%></td>
-                <td><%= item.AI_Marks%></td>
-                <td>
-                    <form action="/deleteStudent/<%=item._id %>" method="post">
-                        <button type="submit">Delete</button>                      
-                    </form>                 
-                </td>
-            </tr>
+        <% if(student!=null) { %>
+            <table border="1px">
+                <tr>
+                    <th>Name</th>
+                    <th>Roll No</th>
+                    <th>WAD Marks</th>
+                    <th>CC Marks</th>
+                    <th>DSBDA Marks</th>
+                    <th>CNS Marks</th>
+                    <th>AI Marks</th>
+                </tr>
+                <% student.forEach(function(item){ %>
+                    <tr>
+                        <td>
+                            <%= item.Name%>
+                        </td>
+                        <td>
+                            <%= item.Roll_No%>
+                        </td>
+                        <td>
+                            <%= item.WAD_Marks%>
+                        </td>
+                        <td>
+                            <%= item.CC_Marks%>
+                        </td>
+                        <td>
+                            <%= item.DSBDA_Marks%>
+                        </td>
+                        <td>
+                            <%= item.CNS_Marks%>
+                        </td>
+                        <td>
+                            <%= item.AI_Marks%>
+                        </td>
+                        <td>
+                            <form action="/deleteStudent/<%=item._id %>" method="post">
+                                <button type="submit">Delete</button>
+                            </form>
+                            <button onclick="openForm('<%=item._id %>')">Update</button>
+                        </td>
+                    </tr>
 
-        <% }) %>
-    </table>
-    <button>
-        <a href="/">
-        Insert Student Details
-    </a>
-    </button>    
-<%} %>
+                    <% }) %>
+            </table>
+            <button>
+                <a href="/">
+                    Insert Student Details
+                </a>
+            </button>
+
+            <!-- A button to open the popup form -->
+            <!-- <button class="open-button" onclick="openForm()">Open Form</button> -->
+
+            <!-- The form -->
+            <div class="form-popup" id="myForm">
+                <!-- <form action="/action_page.php" class="form-container"> -->
+                <form action="/updateStudent" method="post" class="form-container">
+                    <input id="mongoid" type="text" name="mongoid" style="display:none">
+                    <div style="display: flex;">
+                        <div>
+                    <label>Name</label>
+                    <input placeholder="Name" id="name" name="Name" type="text" required>
+                </div>
+                <div>
+                    <label>Roll_No</label>
+                    <input placeholder="Roll No" id="rollno" name="Roll_No" type="text" required>
+                    </div>
+                </div>
+                <div style="display:flex">
+                    <div>
+                    <label for="">WAD_Marks</label>
+                    <input placeholder="WAD Marks" id="wadmarks" name="WAD_Marks" type="Number" required>
+                </div>
+                <div>
+                    <label for="">CC_Marks</label>
+                    <input placeholder="CC Marks" id="ccmarks" name="CC_Marks" type="Number" required>
+                </div>
+                </div>
+                <div style="display:flex">
+                    <div>
+                    <label for="">DSBDA_Marks</label>
+                    <input placeholder="DSBDA Marks" id="dsbdamarks" name="DSBDA_Marks" type="Number" required>
+                </div>
+                <div>
+                    <label for="">CNS_Marks</label>
+                    <input placeholder="CNS Marks" id="cnsmarks" name="CNS_Marks" type="Number" required>
+                </div>
+                </div>
+                <div style="display:flex">
+                    <div>
+                    <label for="">AI_Marks</label> <br>
+                    <input placeholder="AI Marks" id="aimarks" name="AI_Marks" type="Number" style="width: 54%" required>
+                    <br>
+                </div>
+                <div></div>
+                </div>
+                    <button type="submit" class="btn">Submit</button>
+                    <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
+                </form>
+                <!-- </form> -->
+            </div>
+            <script>
+                function openForm(item) {
+                    console.log(item)
+                    var studentDetails;
+                    fetch(`http://localhost:3000/students/${item}`)
+                        .then(response => {
+                            // Check if the response was successful (status code 2xx)
+                            if (response.ok) {
+                                return response.json(); // Parse the response body as JSON
+                            } else {
+                                throw new Error('Request failed with status: ' + response.status);
+                            }
+                        })
+                        .then(data => {
+                            // Handle the data
+                            console.log(data);
+                            studentDetails = data;
+                            document.getElementById("mongoid").value = studentDetails._id
+                            document.getElementById("name").value = studentDetails.Name
+                            document.getElementById("rollno").value = studentDetails.Roll_No
+                            document.getElementById("wadmarks").value = studentDetails.WAD_Marks
+                            document.getElementById("ccmarks").value = studentDetails.CC_Marks
+                            document.getElementById("dsbdamarks").value = studentDetails.DSBDA_Marks
+                            document.getElementById("cnsmarks").value = studentDetails.CNS_Marks
+                            document.getElementById("aimarks").value = studentDetails.AI_Marks                         
+                        })
+                        .catch(error => {
+                            // Handle errors
+                            console.error(error);
+                        });
+
+                    document.getElementById("myForm").style.display = "block";
+                }
+
+                function closeForm() {
+                    document.getElementById("myForm").style.display = "none";
+                } 
+            </script>
+            <%} %>

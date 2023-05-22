@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const Student = require('./model');
 const dbConfig = require('./config');
+const { MongoClient, ObjectId } = require('mongodb');
 
 var PORT = 3000;
 var app = express();
@@ -62,11 +63,32 @@ app.post('/deleteStudent/:id',(req,res)=>{
     })
 });
 
+app.get('/students/:id', (req, res)=>{
+    Student.findById(req.params.id).then((student)=>{
+        console.log("student", student)
+        res.json(student)
+    }).catch((err)=>{
+        res.json({"error": err})
+    })
+})
+
 // update any student
-app.get('/updateStudent',(req,res)=>{
-    var id = req.query['rollNo'];
+app.post('/updateStudent',(req,res)=>{
+    console.log("body", req.body)
+    // console.log("req", new ObjectId(req.body._id))
+    var id = new ObjectId(req.body._id);
+    var data = {       
+        Name: req.body.Name,
+    Roll_No: req.body.Roll_No,
+    WAD_Marks: Number(req.body.WAD_Marks),
+    CC_Marks: Number(req.body.CC_Marks),
+    DSBDA_Marks: Number(req.body.DSBDA_Marks),
+    CNS_Marks: Number(req.body.CNS_Marks),
+    AI_Marks: Number(req.body.AI_Marks),
+    }
+    console.log(data);
     var marks = parseInt(req.query['marks']);
-    Student.findOneAndUpdate({"Roll_No":id},{$inc:{"WAD_Marks":marks, "DSBDA_Marks":marks,"CC_Marks":marks,"CNS_Marks":marks,"AI_Marks":marks}}).then(()=>{
+    Student.findByIdAndUpdate(req.body.mongoid, data, {new: true}).then(()=>{
         res.redirect('/students');
     }).catch((err)=>{
         res.json({"error": err});
