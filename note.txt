@@ -1,2 +1,8 @@
 step 1:  npm install
 step 2: node app.js
+
+git commands
+git status
+git add .
+git commit -m "comment"
+git push origin main
